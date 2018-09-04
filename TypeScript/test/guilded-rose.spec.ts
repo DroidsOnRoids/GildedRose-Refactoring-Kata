@@ -6,92 +6,105 @@ const sulfuras = GildedRose.SULFURAS;
 const backstage = GildedRose.BACKSTAGE;
 
 describe('Gilded Rose', function () {
-    it('should foo', function() {
-        const gildedRose = new GildedRose([ new Item('foo', 0, 0) ]);
-        const items = gildedRose.updateQuality();
-        expect(items[0].name).to.equal('foo');
-    });
+    const tick = (item) => {
+      const gildedRose = new GildedRose([item]);
+      const newItems = gildedRose.updateQuality();
+      return newItems[0];
+    }
+
+    const expectName = (item, value) => expectProperty(item, 'name', value);
+    const expectSellIn = (item, value) => expectProperty(item, 'sellIn', value);
+    const expectQuality = (item, value) => expectProperty(item, 'quality', value);
+
+    const expectProperty = (item, propertyName, value) => {
+        it (`should have ${propertyName} equal ${value}`, () => {
+            expect(item).to.have.property(propertyName, value);
+        });
+    };
 
     it('works in place', () => {
-        const item = new Item('foo', 5, 5)
-        const gildedRose = new GildedRose([item]);
-        const items = gildedRose.updateQuality();
-        expect(items[0].sellIn).to.equal(4);
-        expect(items[0].quality).to.equal(4);
-        expect(item.sellIn).to.equal(4);
-        expect(item.quality).to.equal(4);
+        const item = new Item('foo', 5, 5);
+        const newItem = tick(item);
+        expectSellIn(newItem, 4);
+        expectQuality(newItem, 4);
+        expectSellIn(item, 4);
+        expectQuality(item, 4);
     })
 
-    describe('updateQuality()', function() {
-        it('decreases sell in value', () => {
-            const gildedRose = new GildedRose([ new Item('foo', 5, 5) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].sellIn).to.equal(4);
-        })
+    describe('for regular item', () => {
+        describe('in basic case', () => {
+            const item = new Item('foo', 5, 5);
+            const newItem = tick(item);
+            expectName(newItem, 'foo');
+            expectSellIn(newItem, 4);
+            expectQuality(newItem, 4);
+        });
 
-        it('decreases quality value', () => {
-            const gildedRose = new GildedRose([ new Item('foo', 5, 5) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].quality).to.equal(4);
-        })
+        describe('with sellIn 0', () => {
+            const item = new Item('foo', 0, 5);
+            const newItem = tick(item);
+            expectSellIn(newItem, -1);
+            expectQuality(newItem, 3);
+        });
 
-        describe('sell in is zero', () => {
-            const gildedRose = new GildedRose([ new Item('foo', 0, 5) ]);
+        describe('with quality 0', () => {
+            const item = new Item('foo', 1, 0);
+            const newItem = tick(item);
+            expectQuality(newItem, 0);
+        });
 
-            it('decreases quality by 2', () => {
-                const items = gildedRose.updateQuality();
-                expect(items[0].quality).to.equal(3);
-            })
-        })
+        describe('with quality above 50', () => {
+            const item = new Item('foo', 1, 60);
+            const newItem = tick(item);
+            expectQuality(newItem, 59);
+        });
+    });
 
-        it('the quality of an item is never negative', () => {
-            const gildedRose = new GildedRose([ new Item('foo', 0, 0) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].quality).to.equal(0);
-        })
-        it('"Aged Brie" actually increases in Quality the older it gets', () => {
-            const gildedRose = new GildedRose([ new Item(agedBrie, 10 , 10) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].quality).to.equal(11);
-        })
+    describe('Aged Brie - increases in Quality the older it gets', function() {
+        describe('in basic case', () => {
+            const item = new Item(agedBrie, 10, 10);
+            const newItem = tick(item);
+            expectQuality(newItem, 11);
+        });
 
-        it('The Quality of an item is never more than 50', () => {
-            const gildedRose = new GildedRose([ new Item(agedBrie, 50, 50) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].quality).to.equal(50);
-        })
+        describe('with quality pushed to the limit', () => {
+            const item = new Item(agedBrie, 50, 50);
+            const newItem = tick(item);
+            expectQuality(newItem, 50);
+        });
+    });
 
-        it('"Sulfuras", being a legendary item, never has to be sold or decreases in Quality', () => {
-            const gildedRose = new GildedRose([ new Item(sulfuras, 10, 10) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].quality).to.equal(10);
-        })
+    describe('Sulfuras - never decreases in Quality', () => {
+        describe('in basic case', () => {
+            const item = new Item(sulfuras, 10, 10);
+            const newItem = tick(item);
+            expectQuality(newItem, 10);
+        });
+    });
 
-        describe('"Backstage passes", like aged brie, increases in Quality as its SellIn value approaches', () => {
-            it('quality increases by 1', () => {
-                const gildedRose = new GildedRose([ new Item(backstage, 20, 20) ]);
-                const items = gildedRose.updateQuality();
-                expect(items[0].quality).to.equal(21);
-            })
+    describe('Backstage passes - increases in Quality as its SellIn value approaches', () => {
+        describe('in basic case', () => {
+            const item = new Item(backstage, 20, 20);
+            const newItem = tick(item);
+            expectQuality(newItem, 21);
+        });
 
-            it('quality increases by 2 when there are 10 days or less', () => {
-                const gildedRose = new GildedRose([ new Item(backstage, 10, 10) ]);
-                const items = gildedRose.updateQuality();
-                expect(items[0].quality).to.equal(12);
-            })
+        describe('when 10 days left', () => {
+            const item = new Item(backstage, 10, 20);
+            const newItem = tick(item);
+            expectQuality(newItem, 22);
+        });
 
-            it('quality increases by 3 when there are 5 days or leess', () => {
-                const gildedRose = new GildedRose([ new Item(backstage, 5, 5) ]);
-                const items = gildedRose.updateQuality();
-                expect(items[0].quality).to.equal(8);
-            })
+        describe('when 5 days left', () => {
+            const item = new Item(backstage, 5, 20);
+            const newItem = tick(item);
+            expectQuality(newItem, 23);
+        });
 
-            it('Quality drops to 0 after the concert', () => {
-                const gildedRose = new GildedRose([ new Item(backstage, 0, 5) ]);
-                const items = gildedRose.updateQuality();
-                expect(items[0].quality).to.equal(0);
-            })
-        })
-
-    })
+        describe('after the conect', () => {
+            const item = new Item(backstage, 0, 20);
+            const newItem = tick(item);
+            expectQuality(newItem, 0);
+        });
+    });
 });
