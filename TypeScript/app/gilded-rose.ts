@@ -37,27 +37,27 @@ export class GildedRose {
         if (item.name === GildedRose.SULFURAS) return;
         if (item.name === GildedRose.AGED_BRIE) {
             if (item.sellIn > 0) {
-                this.incrementQualityRespectingLimit(item);
+                this.increaseQualityRespectingLimit(item, 1);
             }
             return;
         }
         if (item.name === GildedRose.BACKSTAGE) {
-            this.incrementQualityRespectingLimit(item);
-            if (item.sellIn < 11) {
-                this.incrementQualityRespectingLimit(item);
-            }
-            if (item.sellIn < 6) {
-                this.incrementQualityRespectingLimit(item);
-            }
             if (item.sellIn < 1) {
                 item.quality = 0;
+            } else if (item.sellIn < 6) {
+                this.increaseQualityRespectingLimit(item, 3);
+            } else if (item.sellIn < 11) {
+                this.increaseQualityRespectingLimit(item, 2);
+            } else {
+                this.increaseQualityRespectingLimit(item, 1);
             }
             return;
         }
 
-        this.decrementQualityRespectingLimit(item);
         if (item.sellIn < 1) {
-            this.decrementQualityRespectingLimit(item);
+            this.decreaseQualityRespectingLimit(item, 2);
+        } else {
+            this.decreaseQualityRespectingLimit(item, 1);
         }
     }
 
@@ -66,11 +66,11 @@ export class GildedRose {
         item.sellIn -= 1;
     }
 
-    incrementQualityRespectingLimit(item) {
-        item.quality = Math.min(item.quality+1, GildedRose.MAX_QUALITY);
+    increaseQualityRespectingLimit(item, howMany) {
+        item.quality = Math.min(item.quality+howMany, GildedRose.MAX_QUALITY);
     }
 
-    decrementQualityRespectingLimit(item) {
-        item.quality = Math.max(item.quality-1, GildedRose.MIN_QUALITY);
+    decreaseQualityRespectingLimit(item, howMany) {
+        item.quality = Math.max(item.quality-howMany, GildedRose.MIN_QUALITY);
     }
 }
