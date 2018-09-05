@@ -1,9 +1,11 @@
 import { expect } from 'chai';
-import { Item, GildedRose } from '../app/gilded-rose';
-
-const agedBrie = GildedRose.AGED_BRIE;
-const sulfuras = GildedRose.SULFURAS;
-const backstage = GildedRose.BACKSTAGE;
+import { GildedRose } from '../app/gilded-rose';
+import { Item } from '../app/item';
+import {
+    AGED_BRIE,
+    BACKSTAGE,
+    SULFURAS,
+} from '../app/constants';
 
 describe('Gilded Rose', function () {
     const tick = (item) => {
@@ -69,31 +71,31 @@ describe('Gilded Rose', function () {
 
     describe('Aged Brie - increases in Quality the older it gets', function() {
         describe('in basic case', () => {
-            const item = new Item(agedBrie, 10, 10);
+            const item = new Item(AGED_BRIE, 10, 10);
             const newItem = tick(item);
             expectQuality(newItem, 11);
         });
 
         describe('with quality pushed to the limit', () => {
-            const item = new Item(agedBrie, 50, 50);
+            const item = new Item(AGED_BRIE, 50, 50);
             const newItem = tick(item);
             expectQuality(newItem, 50);
         });
 
         describe('with SellIn 1', () => {
-            const item = new Item(agedBrie, 1, 10);
+            const item = new Item(AGED_BRIE, 1, 10);
             const newItem = tick(item);
             expectQuality(newItem, 11);
         });
 
         describe('with SellIn 0', () => {
-            const item = new Item(agedBrie, 0, 10);
+            const item = new Item(AGED_BRIE, 0, 10);
             const newItem = tick(item);
             expectQuality(newItem, 10);
         });
 
         describe('with SellIn -1', () => {
-            const item = new Item(agedBrie, -1, 10);
+            const item = new Item(AGED_BRIE, -1, 10);
             const newItem = tick(item);
             expectQuality(newItem, 10);
         });
@@ -101,7 +103,7 @@ describe('Gilded Rose', function () {
 
     describe('Sulfuras - never decreases in Quality or SellIn', () => {
         describe('in basic case', () => {
-            const item = new Item(sulfuras, 10, 10);
+            const item = new Item(SULFURAS, 10, 10);
             const newItem = tick(item);
             expectSellIn(newItem, 10);
             expectQuality(newItem, 10);
@@ -110,25 +112,25 @@ describe('Gilded Rose', function () {
 
     describe('Backstage passes - increases in Quality as its SellIn value approaches', () => {
         describe('in basic case', () => {
-            const item = new Item(backstage, 20, 20);
+            const item = new Item(BACKSTAGE, 20, 20);
             const newItem = tick(item);
             expectQuality(newItem, 21);
         });
 
         describe('when 10 days left', () => {
-            const item = new Item(backstage, 10, 20);
+            const item = new Item(BACKSTAGE, 10, 20);
             const newItem = tick(item);
             expectQuality(newItem, 22);
         });
 
         describe('when 5 days left', () => {
-            const item = new Item(backstage, 5, 20);
+            const item = new Item(BACKSTAGE, 5, 20);
             const newItem = tick(item);
             expectQuality(newItem, 23);
         });
 
         describe('after the conect', () => {
-            const item = new Item(backstage, 0, 20);
+            const item = new Item(BACKSTAGE, 0, 20);
             const newItem = tick(item);
             expectQuality(newItem, 0);
         });
