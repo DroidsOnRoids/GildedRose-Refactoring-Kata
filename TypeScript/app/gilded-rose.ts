@@ -29,21 +29,17 @@ export class GildedRose {
     }
 
     updateNormalItem = (item:Item):void =>{
-        item.sellIn -= 1;
         const degradValue = item.sellIn <0 ? 2 : 1
         item.quality = Math.max(GildedRose.MIN_QUALITY, item.quality - degradValue)
     }
 
     updateAgedBrie = (item:Item):void =>{
-        item.sellIn -= 1;
         item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+1)
     }
     updateSulfuras = (item:Item):void =>{
-        item.sellIn -=1;
     }
 
     updateBackstage = (item:Item):void => {
-        item.sellIn -= 1;
         if(item.sellIn > 10){
             item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+1)
         } else if(item.sellIn >5){
@@ -55,8 +51,13 @@ export class GildedRose {
         }
     }
 
+    updateSellIn = (item:Item):void =>{
+        item.sellIn -= 1;
+    }
+
     updateItem = (item:Item):void => {
         const {AGED_BRIE,SULFURAS,BACKSTAGE} = GildedRose;
+        this.updateSellIn(item);
         switch(item.name){
             case AGED_BRIE:
                 this.updateAgedBrie(item);
