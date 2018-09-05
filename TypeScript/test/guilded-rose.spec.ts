@@ -5,6 +5,7 @@ import {
     AGED_BRIE,
     BACKSTAGE,
     SULFURAS,
+    CONJURED,
 } from '../app/constants';
 
 describe('Gilded Rose', function () {
@@ -133,6 +134,21 @@ describe('Gilded Rose', function () {
             const item = new Item(BACKSTAGE, 0, 20);
             const newItem = tick(item);
             expectQuality(newItem, 0);
+        });
+    });
+
+
+    describe('Conjured - ages twice as fast as regular item', () => {
+        describe('in basic case', () => {
+            const item = new Item(CONJURED, 20, 20);
+            const newItem = tick(item);
+            expectQuality(newItem, 18);
+        });
+
+        describe('when SellIn 0', () => {
+            const item = new Item(CONJURED, 0, 20);
+            const newItem = tick(item);
+            expectQuality(newItem, 16);
         });
     });
 });
