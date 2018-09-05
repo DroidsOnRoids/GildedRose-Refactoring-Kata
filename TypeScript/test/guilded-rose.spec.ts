@@ -47,6 +47,13 @@ describe('Gilded Rose', function () {
             expectQuality(newItem, 3);
         });
 
+        describe('with sellIn -1', () => {
+            const item = new Item('foo', -1, 5);
+            const newItem = tick(item);
+            expectSellIn(newItem, -2);
+            expectQuality(newItem, 3);
+        });
+
         describe('with quality 0', () => {
             const item = new Item('foo', 1, 0);
             const newItem = tick(item);
@@ -71,6 +78,24 @@ describe('Gilded Rose', function () {
             const item = new Item(agedBrie, 50, 50);
             const newItem = tick(item);
             expectQuality(newItem, 50);
+        });
+
+        describe('with SellIn 1', () => {
+            const item = new Item(agedBrie, 1, 10);
+            const newItem = tick(item);
+            expectQuality(newItem, 11);
+        });
+
+        describe('with SellIn 0', () => {
+            const item = new Item(agedBrie, 0, 10);
+            const newItem = tick(item);
+            expectQuality(newItem, 10);
+        });
+
+        describe('with SellIn -1', () => {
+            const item = new Item(agedBrie, -1, 10);
+            const newItem = tick(item);
+            expectQuality(newItem, 10);
         });
     });
 

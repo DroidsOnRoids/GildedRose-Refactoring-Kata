@@ -31,36 +31,33 @@ export class GildedRose {
     updateItem(item) {
         this.updateQualityOfItem(item);
         this.updateSellInOfItem(item);
-        this.updateQualityOfItemAfterDuedate(item);
     }
 
     updateQualityOfItem(item) {
         if (item.name === GildedRose.SULFURAS) return;
         if (item.name === GildedRose.AGED_BRIE) {
-            if (item.quality < 50) {
-                item.quality += 1;
+            if (item.sellIn > 0) {
+                this.incrementQualityRespectingLimit(item);
             }
             return;
         }
         if (item.name === GildedRose.BACKSTAGE) {
-            if (item.quality < 50) {
-                item.quality += 1;
-                if (item.sellIn < 11) {
-                    if (item.quality < 50) {
-                        item.quality += 1;
-                    }
-                }
-                if (item.sellIn < 6) {
-                    if (item.quality < 50) {
-                        item.quality += 1;
-                    }
-                }
+            this.incrementQualityRespectingLimit(item);
+            if (item.sellIn < 11) {
+                this.incrementQualityRespectingLimit(item);
+            }
+            if (item.sellIn < 6) {
+                this.incrementQualityRespectingLimit(item);
+            }
+            if (item.sellIn < 1) {
+                item.quality = 0;
             }
             return;
         }
 
-        if (item.quality > 0) {
-            item.quality -= 1;
+        this.decrementQualityRespectingLimit(item);
+        if (item.sellIn < 1) {
+            this.decrementQualityRespectingLimit(item);
         }
     }
 
@@ -69,21 +66,11 @@ export class GildedRose {
         item.sellIn -= 1;
     }
 
-    updateQualityOfItemAfterDuedate(item) {
-        if (item.sellIn >= 0) return;
-        if (item.name === GildedRose.SULFURAS) return;
-        if (item.name === GildedRose.AGED_BRIE) {
-            if (item.quality < 50) {
-                item.quality -=1;
-            }
-            return;
-        }
-        if (item.name === GildedRose.BACKSTAGE) {
-            item.quality = 0;
-            return;
-        }
-        if (item.quality > 0) {
-            item.quality -= 1;
-        }
+    incrementQualityRespectingLimit(item) {
+        item.quality = Math.min(item.quality+1, GildedRose.MAX_QUALITY);
+    }
+
+    decrementQualityRespectingLimit(item) {
+        item.quality = Math.max(item.quality-1, GildedRose.MIN_QUALITY);
     }
 }
