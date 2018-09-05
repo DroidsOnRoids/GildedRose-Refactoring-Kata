@@ -2,6 +2,7 @@ import {
     AGED_BRIE,
     BACKSTAGE,
     SULFURAS,
+    CONJURED,
     MIN_QUALITY,
     MAX_QUALITY,
 } from './constants';
@@ -61,6 +62,16 @@ class Sulfuras extends RegularItem {
     updateSellIn() {}
 }
 
+class Conjured extends RegularItem {
+    updateQuality() {        
+        if (this.sellIn < 1) {
+            this.decreaseQualityRespectingLimit(4);
+        } else {
+            this.decreaseQualityRespectingLimit(2);
+        }
+    }
+}
+
 export class ItemFactory {
     static getItem(rawItem) {
         switch (rawItem.name) {
@@ -70,6 +81,8 @@ export class ItemFactory {
                 return new Backstage(rawItem.name, rawItem.sellIn, rawItem.quality);
             case SULFURAS:
                 return new Sulfuras(rawItem.name, rawItem.sellIn, rawItem.quality);
+            case CONJURED:
+                return new Conjured(rawItem.name, rawItem.sellIn, rawItem.quality);
             default:
                 return new RegularItem(rawItem.name, rawItem.sellIn, rawItem.quality);
         }
