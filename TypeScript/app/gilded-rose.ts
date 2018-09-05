@@ -28,50 +28,47 @@ export class GildedRose {
         return this.items;
     }
 
-    updateItem(item) {
-        if (item.name != GildedRose.AGED_BRIE && item.name != GildedRose.BACKSTAGE) {
-            if (item.quality > 0) {
-                if (item.name != GildedRose.SULFURAS) {
-                    item.quality = item.quality - 1
-                }
-            }
-        } else {
-            if (item.quality < 50) {
-                item.quality = item.quality + 1
-                if (item.name == GildedRose.BACKSTAGE) {
-                    if (item.sellIn < 11) {
-                        if (item.quality < 50) {
-                            item.quality = item.quality + 1
-                        }
-                    }
-                    if (item.sellIn < 6) {
-                        if (item.quality < 50) {
-                            item.quality = item.quality + 1
-                        }
-                    }
-                }
-            }
-        }
-        if (item.name != GildedRose.SULFURAS) {
-            item.sellIn = item.sellIn - 1;
-        }
-        if (item.sellIn < 0) {
-            if (item.name != GildedRose.AGED_BRIE) {
-                if (item.name != GildedRose.BACKSTAGE) {
-                    if (item.quality > 0) {
-                        if (item.name != GildedRose.SULFURAS) {
-                            item.quality = item.quality - 1
-                        }
-                    }
-                } else {
-                    item.quality = item.quality - item.quality
-                }
-            } else {
-                if (item.quality < 50) {
-                    item.quality = item.quality + 1
-                }
-            }
-        }
+    updateNormalItem = (item:Item):void =>{
+        item.sellIn -= 1;
+        const degradValue = item.sellIn <0 ? 2 : 1
+        item.quality = Math.max(GildedRose.MIN_QUALITY, item.quality - degradValue)
+    }
 
+    updateAgedBrie = (item:Item):void =>{
+        item.sellIn -= 1;
+        item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+1)
+    }
+    updateSulfuras = (item:Item):void =>{
+        item.sellIn -=1;
+    }
+
+    updateBackstage = (item:Item):void => {
+        item.sellIn -= 1;
+        if(item.sellIn > 10){
+            item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+1)
+        } else if(item.sellIn >5){
+            item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+2)
+        } else if(item.sellIn > 0){
+            item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+3)
+        } else {
+            item.quality = 0
+        }
+    }
+
+    updateItem = (item:Item):void => {
+        const {AGED_BRIE,SULFURAS,BACKSTAGE} = GildedRose;
+        switch(item.name){
+            case AGED_BRIE:
+                this.updateAgedBrie(item);
+                break;
+            case SULFURAS:
+                this.updateSulfuras(item);
+                break;
+            case BACKSTAGE:
+                this.updateBackstage(item);
+                break;
+            default:
+                this.updateNormalItem(item);
+        }
     }
 }
