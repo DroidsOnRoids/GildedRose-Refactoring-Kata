@@ -74,10 +74,11 @@ describe('Gilded Rose', function () {
         });
     });
 
-    describe('Sulfuras - never decreases in Quality', () => {
+    describe('Sulfuras - never decreases in Quality or SellIn', () => {
         describe('in basic case', () => {
             const item = new Item(sulfuras, 10, 10);
             const newItem = tick(item);
+            expectSellIn(newItem, 10);
             expectQuality(newItem, 10);
         });
     });
