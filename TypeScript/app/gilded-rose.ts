@@ -1,3 +1,5 @@
+import QualityUpdaterFactory from "./quality-updater-factory";
+
 export class Item {
     name: string;
     sellIn: number;
@@ -28,27 +30,6 @@ export class GildedRose {
         return this.items;
     }
 
-    updateNormalItem = (item:Item):void =>{
-        const degradValue = item.sellIn <0 ? 2 : 1
-        item.quality = Math.max(GildedRose.MIN_QUALITY, item.quality - degradValue)
-    }
-
-    updateAgedBrie = (item:Item):void =>{
-        item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+1)
-    }
-    
-    updateBackstage = (item:Item):void => {
-        if(item.sellIn > 10){
-            item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+1)
-        } else if(item.sellIn >5){
-            item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+2)
-        } else if(item.sellIn > 0){
-            item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+3)
-        } else {
-            item.quality = 0
-        }
-    }
-
     updateSellIn = (item:Item):void =>{
         item.sellIn -= 1;
     }
@@ -56,17 +37,8 @@ export class GildedRose {
     updateItem = (item:Item):void => {
         const {AGED_BRIE,SULFURAS,BACKSTAGE} = GildedRose;
         this.updateSellIn(item);
-        switch(item.name){
-            case AGED_BRIE:
-                this.updateAgedBrie(item);
-                break;
-            case SULFURAS:
-                break;
-            case BACKSTAGE:
-                this.updateBackstage(item);
-                break;
-            default:
-                this.updateNormalItem(item);
-        }
+        const updater = QualityUpdaterFactory.get(item);
+        updater.update(item);
     }
 }
+
