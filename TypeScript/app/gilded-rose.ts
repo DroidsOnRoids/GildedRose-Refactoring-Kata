@@ -10,6 +10,59 @@ export class Item {
     }
 }
 
+export class RegularItem extends Item {
+    increaseQualityRespectingLimit(howMany) {
+        this.quality = Math.min(this.quality+howMany, GildedRose.MAX_QUALITY);
+    }
+
+    decreaseQualityRespectingLimit(howMany) {
+        this.quality = Math.max(this.quality-howMany, GildedRose.MIN_QUALITY);
+    }
+
+    updateQuality() {
+        if (this.sellIn < 1) {
+            this.decreaseQualityRespectingLimit(2);
+        } else {
+            this.decreaseQualityRespectingLimit(1);
+        }
+    }
+
+    updateSellIn() {
+        this.sellIn -= 1;
+    }
+
+    update() {
+        this.updateQuality();
+        this.updateSellIn();
+    }
+}
+
+export class AgedBrie extends RegularItem {
+    updateQuality() {
+        if (this.sellIn > 0) {
+            this.increaseQualityRespectingLimit(1);
+        }
+    }
+}
+
+export class Backstage extends RegularItem {
+    updateQuality() {
+        if (this.sellIn < 1) {
+            this.quality = 0;
+        } else if (this.sellIn < 6) {
+            this.increaseQualityRespectingLimit(3);
+        } else if (this.sellIn < 11) {
+            this.increaseQualityRespectingLimit(2);
+        } else {
+            this.increaseQualityRespectingLimit(1);
+        }
+    }
+}
+
+export class Sulfuras extends RegularItem {
+    updateQuality() {}
+    updateSellIn() {}
+}
 
 export class GildedRose {
     items: Array<Item>;
@@ -24,53 +77,26 @@ export class GildedRose {
     }
 
     updateQuality() {
-        this.items.forEach(this.updateItem.bind(this));
+        for (let i=0; i < this.items.length; i+=1) {
+            const rawItem = this.items[i];
+            let item;
+            switch (rawItem.name) {
+                case GildedRose.AGED_BRIE:
+                    item = new AgedBrie(rawItem.name, rawItem.sellIn, rawItem.quality);
+                    break;
+                case GildedRose.BACKSTAGE:
+                    item = new Backstage(rawItem.name, rawItem.sellIn, rawItem.quality);
+                    break;
+                case GildedRose.SULFURAS:
+                    item = new Sulfuras(rawItem.name, rawItem.sellIn, rawItem.quality);
+                    break;
+                default:
+                    item = new RegularItem(rawItem.name, rawItem.sellIn, rawItem.quality);
+                    break;
+            }
+            item.update();
+            this.items[i] = item;
+        }
         return this.items;
-    }
-
-    updateItem(item) {
-        this.updateQualityOfItem(item);
-        this.updateSellInOfItem(item);
-    }
-
-    updateQualityOfItem(item) {
-        if (item.name === GildedRose.SULFURAS) return;
-        if (item.name === GildedRose.AGED_BRIE) {
-            if (item.sellIn > 0) {
-                this.increaseQualityRespectingLimit(item, 1);
-            }
-            return;
-        }
-        if (item.name === GildedRose.BACKSTAGE) {
-            if (item.sellIn < 1) {
-                item.quality = 0;
-            } else if (item.sellIn < 6) {
-                this.increaseQualityRespectingLimit(item, 3);
-            } else if (item.sellIn < 11) {
-                this.increaseQualityRespectingLimit(item, 2);
-            } else {
-                this.increaseQualityRespectingLimit(item, 1);
-            }
-            return;
-        }
-
-        if (item.sellIn < 1) {
-            this.decreaseQualityRespectingLimit(item, 2);
-        } else {
-            this.decreaseQualityRespectingLimit(item, 1);
-        }
-    }
-
-    updateSellInOfItem(item) {
-        if (item.name === GildedRose.SULFURAS) return;
-        item.sellIn -= 1;
-    }
-
-    increaseQualityRespectingLimit(item, howMany) {
-        item.quality = Math.min(item.quality+howMany, GildedRose.MAX_QUALITY);
-    }
-
-    decreaseQualityRespectingLimit(item, howMany) {
-        item.quality = Math.max(item.quality-howMany, GildedRose.MIN_QUALITY);
     }
 }
