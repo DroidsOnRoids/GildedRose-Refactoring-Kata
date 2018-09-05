@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import { Item, GildedRose } from '../app/gilded-rose';
-
-const agedBrie = GildedRose.AGED_BRIE;
-const sulfuras = GildedRose.SULFURAS;
-const backstage = GildedRose.BACKSTAGE;
+import { AGED_BRIE, BACKSTAGE, SULFURAS } from "../app/item-types";
+const agedBrie = AGED_BRIE
+const sulfuras = SULFURAS
+const backstage = BACKSTAGE
 
 describe('Gilded Rose', function () {
     it('should foo', function() {

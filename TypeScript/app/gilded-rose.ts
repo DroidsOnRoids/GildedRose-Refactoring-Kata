@@ -15,11 +15,6 @@ export class Item {
 
 export class GildedRose {
     items: Array<Item>;
-    public static readonly AGED_BRIE = 'Aged Brie';
-    public static readonly BACKSTAGE = 'Backstage passes to a TAFKAL80ETC concert';
-    public static readonly SULFURAS = 'Sulfuras, Hand of Ragnaros';
-    public static readonly MIN_QUALITY = 0;
-    public static readonly MAX_QUALITY = 50;
 
     constructor(items = []) {
         this.items = items;
@@ -35,7 +30,6 @@ export class GildedRose {
     }
 
     updateItem = (item:Item):void => {
-        const {AGED_BRIE,SULFURAS,BACKSTAGE} = GildedRose;
         this.updateSellIn(item);
         const updater = QualityUpdaterFactory.get(item);
         updater.update(item);
