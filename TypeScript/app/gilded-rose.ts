@@ -36,9 +36,7 @@ export class GildedRose {
     updateAgedBrie = (item:Item):void =>{
         item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+1)
     }
-    updateSulfuras = (item:Item):void =>{
-    }
-
+    
     updateBackstage = (item:Item):void => {
         if(item.sellIn > 10){
             item.quality = Math.min(GildedRose.MAX_QUALITY, item.quality+1)
@@ -63,7 +61,6 @@ export class GildedRose {
                 this.updateAgedBrie(item);
                 break;
             case SULFURAS:
-                this.updateSulfuras(item);
                 break;
             case BACKSTAGE:
                 this.updateBackstage(item);
