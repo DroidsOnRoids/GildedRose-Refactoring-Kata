@@ -1,9 +1,10 @@
 import { expect } from 'chai';
 import { Item, GildedRose } from '../app/gilded-rose';
-import { AGED_BRIE, BACKSTAGE, SULFURAS } from "../app/item-types";
-const agedBrie = AGED_BRIE
-const sulfuras = SULFURAS
-const backstage = BACKSTAGE
+import { AGED_BRIE, BACKSTAGE, SULFURAS, CONJURED } from "../app/item-types";
+const agedBrie = AGED_BRIE;
+const sulfuras = SULFURAS;
+const backstage = BACKSTAGE;
+const conjured = CONJURED;
 
 describe('Gilded Rose', function () {
     it('should foo', function() {
@@ -90,6 +91,21 @@ describe('Gilded Rose', function () {
                 const gildedRose = new GildedRose([ new Item(backstage, 0, 5) ]);
                 const items = gildedRose.updateQuality();
                 expect(items[0].quality).to.equal(0);
+            })
+        })
+        describe('Conjured items degrade in Quality twice as fast as normal items', () =>{
+            it('decreases quality value', () => {
+                const gildedRose = new GildedRose([ new Item(conjured, 5, 5) ]);
+                const items = gildedRose.updateQuality();
+                expect(items[0].quality).to.equal(3);
+            })
+            describe('sell in is zero', () => {
+                const gildedRose = new GildedRose([ new Item(conjured, 0, 5) ]);
+    
+                it('decreases quality by 4', () => {
+                    const items = gildedRose.updateQuality();
+                    expect(items[0].quality).to.equal(1);
+                })
             })
         })
 

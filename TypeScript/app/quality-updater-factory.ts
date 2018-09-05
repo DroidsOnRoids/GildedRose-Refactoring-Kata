@@ -1,6 +1,6 @@
 import { Item } from "./gilded-rose";
-import { QualityUpdater, AgedBrieUpdater, BackstageUpdater, SulfurasUpdater, ItemQualityUpdater } from "./quality-updater";
-import { AGED_BRIE, BACKSTAGE, SULFURAS } from "./item-types";
+import { QualityUpdater, AgedBrieUpdater, BackstageUpdater, SulfurasUpdater, ItemQualityUpdater, ConjuredUpdater } from "./quality-updater";
+import { AGED_BRIE, BACKSTAGE, SULFURAS, CONJURED } from "./item-types";
 
 export default class QualityUpdaterFactory{
     static get(item:Item):QualityUpdater{
@@ -11,6 +11,8 @@ export default class QualityUpdaterFactory{
                 return new BackstageUpdater();
             case SULFURAS:
                 return new SulfurasUpdater();
+            case CONJURED:
+                return new ConjuredUpdater();
             default:
                 return new ItemQualityUpdater();
         }

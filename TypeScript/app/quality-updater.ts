@@ -10,12 +10,12 @@ class ItemQualityUpdater implements QualityUpdater {
         item.quality = QualityInvariant.verify(item.name,item.quality - this._getDegredValue(item));
     }
 
-    private _shouldDegradesTwice(item:Item):boolean{
+    protected _shouldDegradesTwice(item:Item):boolean{
         return item.sellIn <0;
     }
 
-    private _getDegredValue(item:Item):number{
-        return this._shouldDegradesTwice(item) ? 2 : 1
+    protected _getDegredValue(item:Item):number{
+        return this._shouldDegradesTwice(item) ? 2 : 1;
     }
 }
 
@@ -53,10 +53,17 @@ class SulfurasUpdater implements QualityUpdater{
     }
 }
 
+class ConjuredUpdater extends ItemQualityUpdater{
+    protected _getDegredValue(item:Item):number{
+        return this._shouldDegradesTwice(item) ? 4 : 2;
+    }
+}
+
 export {
     QualityUpdater,
     ItemQualityUpdater,
     AgedBrieUpdater,
     BackstageUpdater,
     SulfurasUpdater,
+    ConjuredUpdater,
 }
