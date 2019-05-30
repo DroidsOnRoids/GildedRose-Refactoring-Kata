@@ -56,6 +56,12 @@ describe('Gilded Rose', function () {
                 const items = gildedRose.updateQuality();
                 expect(items[0].quality).to.equal(11);
             })
+
+            it('increases quality even after sell in date', () => {
+                const gildedRose = new GildedRose([ AgedBrieFactory(10, 0) ]);
+                const items = gildedRose.updateQuality();
+                expect(items[0].quality).to.equal(11);
+            });
     
             it('The Quality of an item is never more than 50', () => {
                 const gildedRose = new GildedRose([ AgedBrieFactory(50, 50) ]);

@@ -19,50 +19,66 @@ class Product {
 
     update(): void {
         const item = this.item;
-        if (item.name != GildedRose.AGED_BRIE && item.name != GildedRose.BACKSTAGE) {
-            if (item.quality > 0) {
-                if (item.name != GildedRose.SULFURAS) {
-                    item.quality = item.quality - 1
-                }
-            }
-        } else {
-            if (item.quality < 50) {
-                item.quality = item.quality + 1
-                if (item.name == GildedRose.BACKSTAGE) {
-                    if (item.sellIn < 11) {
-                        if (item.quality < 50) {
-                            item.quality = item.quality + 1
-                        }
-                    }
-                    if (item.sellIn < 6) {
-                        if (item.quality < 50) {
-                            item.quality = item.quality + 1
-                        }
-                    }
-                }
-            }
+        
+        if (item.quality > 0) {
+            item.quality = item.quality - 1;
         }
-        if (item.name != GildedRose.SULFURAS) {
-            item.sellIn = item.sellIn - 1;
-        }
+        
+        item.sellIn = item.sellIn - 1;
         if (item.sellIn < 0) {
-            if (item.name != GildedRose.AGED_BRIE) {
-                if (item.name != GildedRose.BACKSTAGE) {
-                    if (item.quality > 0) {
-                        if (item.name != GildedRose.SULFURAS) {
-                            item.quality = item.quality - 1
-                        }
-                    }
-                } else {
-                    item.quality = item.quality - item.quality
-                }
-            } else {
-                if (item.quality < 50) {
-                    item.quality = item.quality + 1
-                }
+            if (item.quality > 0) {
+                item.quality = item.quality - 1;
             }
         }
     }
+}
+
+class AgedBireProduct extends Product {
+    update(): void {
+        this.item.sellIn = this.item.sellIn - 1;
+        if (this.item.quality >= 50) return;
+        this.item.quality = this.item.quality + 1;
+    }
+}
+
+class BackStageProduct extends Product {
+    update(): void {
+        this.item.sellIn = this.item.sellIn - 1;
+        this.item.quality = this.item.quality + 1
+        if (this.item.sellIn < 11) {
+            if (this.item.quality < 50) {
+                this.item.quality = this.item.quality + 1
+            }
+        }
+        if (this.item.sellIn < 6) {
+            if (this.item.quality < 50) {
+                this.item.quality = this.item.quality + 1
+            }
+        }
+
+        if (this.item.sellIn < 0) {
+            this.item.quality = 0;
+        }
+    }
+}
+
+class SulfurasProduct extends Product {
+    update(): void {}
+}
+
+const recognizeProduct = (item: Item): Product => {
+    switch (item.name) {
+        case GildedRose.AGED_BRIE: {
+           return new AgedBireProduct(item);
+        }
+        case GildedRose.BACKSTAGE: {
+            return new BackStageProduct(item);
+        }
+        case GildedRose.SULFURAS: {
+            return new SulfurasProduct(item);
+        }
+    }
+    return new Product(item);
 }
 
 
@@ -75,7 +91,7 @@ export class GildedRose {
     public static readonly MAX_QUALITY = 50;
 
     constructor(items = []) {
-        this.products = items.map((item) => (new Product(item)));
+        this.products = items.map(recognizeProduct);
     }
 
     updateQuality() {
