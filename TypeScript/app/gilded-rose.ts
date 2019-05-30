@@ -10,25 +10,15 @@ export class Item {
     }
 }
 
+class Product {
+    item: Item;
 
-export class GildedRose {
-    items: Array<Item>;
-    public static readonly AGED_BRIE = 'Aged Brie';
-    public static readonly BACKSTAGE = 'Backstage passes to a TAFKAL80ETC concert';
-    public static readonly SULFURAS = 'Sulfuras, Hand of Ragnaros';
-    public static readonly MIN_QUALITY = 0;
-    public static readonly MAX_QUALITY = 50;
-
-    constructor(items = []) {
-        this.items = items;
+    constructor(item: Item){
+        this.item = item;
     }
 
-    updateQuality() {
-        this.items.forEach(this.updateItem)
-        return this.items;
-    }
-
-    updateItem(item) {
+    update(): void {
+        const item = this.item;
         if (item.name != GildedRose.AGED_BRIE && item.name != GildedRose.BACKSTAGE) {
             if (item.quality > 0) {
                 if (item.name != GildedRose.SULFURAS) {
@@ -72,6 +62,32 @@ export class GildedRose {
                 }
             }
         }
-
     }
+}
+
+
+export class GildedRose {
+    products: Array<Product>;
+    public static readonly AGED_BRIE = 'Aged Brie';
+    public static readonly BACKSTAGE = 'Backstage passes to a TAFKAL80ETC concert';
+    public static readonly SULFURAS = 'Sulfuras, Hand of Ragnaros';
+    public static readonly MIN_QUALITY = 0;
+    public static readonly MAX_QUALITY = 50;
+
+    constructor(items = []) {
+        this.products = items.map((item) => (new Product(item)));
+    }
+
+    updateQuality() {
+        this.products.forEach((product) => { product.update(); })
+        return this.products.map((product) => product.item);
+    }
+}
+
+export const AgedBrieFactory = (initialQuality: number, initialSellIn: number) => {
+    return new Item(
+        GildedRose.AGED_BRIE,
+        initialSellIn,
+        initialQuality,
+    );
 }
