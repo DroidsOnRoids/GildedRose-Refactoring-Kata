@@ -10,6 +10,57 @@ export class Item {
     }
 }
 
+const updateItem1 = (item) => {
+    if (item.name != GildedRose.AGED_BRIE && item.name != GildedRose.BACKSTAGE) {
+        if (item.quality > 0) {
+            if (item.name != GildedRose.SULFURAS) {
+                item.quality = item.quality - 1
+            }
+        }
+    } else {
+        if (item.quality < 50) {
+            item.quality = item.quality + 1
+            if (item.name == GildedRose.BACKSTAGE) {
+                if (item.sellIn < 11) {
+                    if (item.quality < 50) {
+                        item.quality = item.quality + 1
+                    }
+                }
+                if (item.sellIn < 6) {
+                    if (item.quality < 50) {
+                        item.quality = item.quality + 1
+                    }
+                }
+            }
+        }
+    }
+}
+
+const updateItem2 = (item) => {
+    if (item.name != GildedRose.SULFURAS) {
+        item.sellIn = item.sellIn - 1;
+    }
+}
+
+const updateItem3 = (item) => {
+    if (item.sellIn < 0) {
+        if (item.name != GildedRose.AGED_BRIE) {
+            if (item.name != GildedRose.BACKSTAGE) {
+                if (item.quality > 0) {
+                    if (item.name != GildedRose.SULFURAS) {
+                        item.quality = item.quality - 1
+                    }
+                }
+            } else {
+                item.quality = item.quality - item.quality
+            }
+        } else {
+            if (item.quality < 50) {
+                item.quality = item.quality + 1
+            }
+        }
+    }
+}
 
 export class GildedRose {
     items: Array<Item>;
@@ -29,49 +80,8 @@ export class GildedRose {
     }
 
     updateItem(item) {
-        if (item.name != GildedRose.AGED_BRIE && item.name != GildedRose.BACKSTAGE) {
-            if (item.quality > 0) {
-                if (item.name != GildedRose.SULFURAS) {
-                    item.quality = item.quality - 1
-                }
-            }
-        } else {
-            if (item.quality < 50) {
-                item.quality = item.quality + 1
-                if (item.name == GildedRose.BACKSTAGE) {
-                    if (item.sellIn < 11) {
-                        if (item.quality < 50) {
-                            item.quality = item.quality + 1
-                        }
-                    }
-                    if (item.sellIn < 6) {
-                        if (item.quality < 50) {
-                            item.quality = item.quality + 1
-                        }
-                    }
-                }
-            }
-        }
-        if (item.name != GildedRose.SULFURAS) {
-            item.sellIn = item.sellIn - 1;
-        }
-        if (item.sellIn < 0) {
-            if (item.name != GildedRose.AGED_BRIE) {
-                if (item.name != GildedRose.BACKSTAGE) {
-                    if (item.quality > 0) {
-                        if (item.name != GildedRose.SULFURAS) {
-                            item.quality = item.quality - 1
-                        }
-                    }
-                } else {
-                    item.quality = item.quality - item.quality
-                }
-            } else {
-                if (item.quality < 50) {
-                    item.quality = item.quality + 1
-                }
-            }
-        }
-
+        updateItem1(item);
+        updateItem2(item);
+        updateItem3(item);
     }
 }
