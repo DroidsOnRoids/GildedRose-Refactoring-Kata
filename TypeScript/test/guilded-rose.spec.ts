@@ -23,51 +23,59 @@ describe('Gilded Rose', function () {
     })
 
     describe('updateQuality()', function() {
-        it('decreases sell in value', () => {
-            const gildedRose = new GildedRose([ new Item('foo', 5, 5) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].sellIn).to.equal(4);
-        })
-
-        it('decreases quality value', () => {
-            const gildedRose = new GildedRose([ new Item('foo', 5, 5) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].quality).to.equal(4);
-        })
-
-        describe('sell in is zero', () => {
-            const gildedRose = new GildedRose([ new Item('foo', 0, 5) ]);
-
-            it('decreases quality by 2', () => {
+        describe('regualar item', function() {
+            it('decreases sell in value', () => {
+                const gildedRose = new GildedRose([ new Item('foo', 5, 5) ]);
                 const items = gildedRose.updateQuality();
-                expect(items[0].quality).to.equal(3);
+                expect(items[0].sellIn).to.equal(4);
+            })
+
+            it('decreases quality value', () => {
+                const gildedRose = new GildedRose([ new Item('foo', 5, 5) ]);
+                const items = gildedRose.updateQuality();
+                expect(items[0].quality).to.equal(4);
+            })
+
+            describe('sell in is zero', () => {
+                const gildedRose = new GildedRose([ new Item('foo', 0, 5) ]);
+
+                it('decreases quality by 2', () => {
+                    const items = gildedRose.updateQuality();
+                    expect(items[0].quality).to.equal(3);
+                })
             })
         })
+
 
         it('the quality of an item is never negative', () => {
             const gildedRose = new GildedRose([ new Item('foo', 0, 0) ]);
             const items = gildedRose.updateQuality();
             expect(items[0].quality).to.equal(0);
         })
-        it('"Aged Brie" actually increases in Quality the older it gets', () => {
-            const gildedRose = new GildedRose([ new Item(agedBrie, 10 , 10) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].quality).to.equal(11);
+
+        describe('Aged brie', () => {
+            it('"Aged Brie" actually increases in Quality the older it gets', () => {
+                const gildedRose = new GildedRose([ new Item(agedBrie, 10 , 10) ]);
+                const items = gildedRose.updateQuality();
+                expect(items[0].quality).to.equal(11);
+            })
+
+            it('The Quality of an item is never more than 50', () => {
+                const gildedRose = new GildedRose([ new Item(agedBrie, 50, 50) ]);
+                const items = gildedRose.updateQuality();
+                expect(items[0].quality).to.equal(50);
+            })
         })
 
-        it('The Quality of an item is never more than 50', () => {
-            const gildedRose = new GildedRose([ new Item(agedBrie, 50, 50) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].quality).to.equal(50);
+        describe('Sulfuras', () => {
+            it('never has to be sold or decreases in Quality', () => {
+                const gildedRose = new GildedRose([ new Item(sulfuras, 10, 10) ]);
+                const items = gildedRose.updateQuality();
+                expect(items[0].quality).to.equal(10);
+            })
         })
 
-        it('"Sulfuras", being a legendary item, never has to be sold or decreases in Quality', () => {
-            const gildedRose = new GildedRose([ new Item(sulfuras, 10, 10) ]);
-            const items = gildedRose.updateQuality();
-            expect(items[0].quality).to.equal(10);
-        })
-
-        describe('"Backstage passes", like aged brie, increases in Quality as its SellIn value approaches', () => {
+        describe('Backstage passes', () => {
             it('quality increases by 1', () => {
                 const gildedRose = new GildedRose([ new Item(backstage, 20, 20) ]);
                 const items = gildedRose.updateQuality();
