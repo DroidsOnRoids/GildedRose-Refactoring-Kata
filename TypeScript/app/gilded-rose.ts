@@ -37,28 +37,30 @@ const updateItem1 = (item) => {
 }
 
 const updateItem2 = (item) => {
-    if (item.name == GildedRose.SULFURAS) return;
-    
-    item.sellIn--;
+    if (item.name == GildedRose.SULFURAS) return
+
+    item.sellIn--
 }
 
 const updateItem3 = (item) => {
-    if (item.sellIn < 0) {
-        if (item.name != GildedRose.AGED_BRIE) {
-            if (item.name != GildedRose.BACKSTAGE) {
-                if (item.quality > 0) {
-                    if (item.name != GildedRose.SULFURAS) {
-                        item.quality = item.quality - 1
-                    }
-                }
-            } else {
-                item.quality = item.quality - item.quality
-            }
-        } else {
-            if (item.quality < 50) {
-                item.quality = item.quality + 1
-            }
+    if (item.sellIn >= 0) return
+
+    if (item.name == GildedRose.AGED_BRIE) {
+        if (item.quality < 50) {
+            item.quality += 1
         }
+        return
+    }
+
+    if (item.name == GildedRose.BACKSTAGE) {
+        item.quality = 0
+        return
+    }
+
+    if (item.name == GildedRose.SULFURAS) return
+
+    if (item.quality > 0) {
+        item.quality--
     }
 }
 
