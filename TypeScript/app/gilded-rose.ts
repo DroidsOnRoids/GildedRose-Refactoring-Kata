@@ -11,34 +11,36 @@ export class Item {
 }
 
 const updateItem1 = (item) => {
-    if (item.name != GildedRose.AGED_BRIE && item.name != GildedRose.BACKSTAGE) {
-        if (item.quality > 0) {
-            if (item.name != GildedRose.SULFURAS) {
-                item.quality = item.quality - 1
-            }
-        }
-    } else {
+    if (item.name == GildedRose.AGED_BRIE) {
         if (item.quality < 50) {
-            item.quality = item.quality + 1
-            if (item.name == GildedRose.BACKSTAGE) {
-                if (item.sellIn < 11) {
-                    if (item.quality < 50) {
-                        item.quality = item.quality + 1
-                    }
-                }
-                if (item.sellIn < 6) {
-                    if (item.quality < 50) {
-                        item.quality = item.quality + 1
-                    }
-                }
+            item.quality++
+        }
+        return
+    }
+
+    if (item.name == GildedRose.BACKSTAGE) {
+        if (item.quality < 50) {
+            item.quality++
+        }
+        if (item.sellIn < 11) {
+            if (item.quality < 50) {
+                item.quality++
             }
         }
+        if (item.sellIn < 6) {
+            if (item.quality < 50) {
+                item.quality++
+            }
+        }
+        return
+    }
+
+    if (item.quality > 0) {
+        item.quality--
     }
 }
 
 const updateItem2 = (item) => {
-    if (item.name == GildedRose.SULFURAS) return
-
     item.sellIn--
 }
 
@@ -56,8 +58,6 @@ const updateItem3 = (item) => {
         item.quality = 0
         return
     }
-
-    if (item.name == GildedRose.SULFURAS) return
 
     if (item.quality > 0) {
         item.quality--
@@ -82,6 +82,7 @@ export class GildedRose {
     }
 
     updateItem(item) {
+        if (item.name == GildedRose.SULFURAS) return
         updateItem1(item);
         updateItem2(item);
         updateItem3(item);
