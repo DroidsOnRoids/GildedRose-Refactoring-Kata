@@ -42,9 +42,6 @@ const updateItem1 = (item) => {
 
 const updateItem2 = (item) => {
     item.sellIn--
-}
-
-const updateItem3 = (item) => {
     if (item.sellIn >= 0) return
 
     if (item.name == GildedRose.AGED_BRIE) {
@@ -85,6 +82,5 @@ export class GildedRose {
         if (item.name == GildedRose.SULFURAS) return
         updateItem1(item);
         updateItem2(item);
-        updateItem3(item);
     }
 }
