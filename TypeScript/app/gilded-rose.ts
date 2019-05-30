@@ -37,9 +37,9 @@ const updateItem1 = (item) => {
 }
 
 const updateItem2 = (item) => {
-    if (item.name != GildedRose.SULFURAS) {
-        item.sellIn = item.sellIn - 1;
-    }
+    if (item.name == GildedRose.SULFURAS) return;
+    
+    item.sellIn--;
 }
 
 const updateItem3 = (item) => {
