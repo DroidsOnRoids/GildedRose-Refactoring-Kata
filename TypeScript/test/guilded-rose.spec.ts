@@ -18,6 +18,22 @@ describe("Daily Gilded Rose Inventory", function () {
     const tomorrowInventory = inventory.tomorrow();
     expect(tomorrowInventory.items[0].name).to.equal(name);
   });
+
+  it("item is immutable", () => {
+    const item = new Item("foo", 5, 5);
+    const inventory = new DailyGildedRoseInventory([item]);
+    inventory.tomorrow();
+    expect(item.sellIn).to.equal(5);
+    expect(item.quality).to.equal(5);
+  });
+
+  it("tomorrow items has changed values", () => {
+    const item = new Item("foo", 5, 5);
+    const inventory = new DailyGildedRoseInventory([item]);
+    const tomorrowInventory = inventory.tomorrow();
+    expect(tomorrowInventory.items[0].sellIn).to.equal(4);
+    expect(tomorrowInventory.items[0].quality).to.equal(4);
+  });
 });
 
 describe("Gilded Rose", function () {
