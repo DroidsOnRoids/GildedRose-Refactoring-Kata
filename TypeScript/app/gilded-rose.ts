@@ -21,18 +21,26 @@ class UseByDate {
     decrease(): void {
         this.sellIn = this.sellIn - 1
     }
+
+    value(): number {
+        return this.sellIn;
+    }
 }
 class Product {
     protected useByDate: UseByDate
     name: string;
-    sellIn: number;
+    _sellIn: number;
     quality: number;
 
     constructor({name,quality,sellIn}: Item){
         this.name = name;
         this.quality = quality;
-        this.sellIn  = sellIn;
-        this.useByDate = new UseByDate(this.sellIn)
+        this._sellIn  = sellIn;
+        this.useByDate = new UseByDate(this._sellIn)
+    }
+
+    get sellIn() {
+        return this.useByDate.value()
     }
 
 
