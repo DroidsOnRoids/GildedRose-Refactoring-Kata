@@ -96,7 +96,20 @@ export class GildedRose {
 
     updateQuality() {
         this.products.forEach((product) => { product.update(); })
+
         return this.products.map((product) => product.item);
+    }
+}
+
+export class DailyGildedRoseInventory {
+    public items: Array<Item>;
+    constructor(items = []) {
+        this.items = items;
+    } 
+
+    tomorrow() {
+        const tomorrowItems = new GildedRose(this.items).updateQuality();
+        return new DailyGildedRoseInventory(tomorrowItems);
     }
 }
 
