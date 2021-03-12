@@ -116,6 +116,20 @@ export class DailyGildedRoseInventory {
   }
 }
 
+export class Crap {
+    public x: DailyGildedRoseInventory;
+
+    constructor(x) {
+        this.x = x;
+        
+    }  
+
+    updateQuality() {
+        this.x = this.x.tomorrow();
+        return this.x.items;
+    }
+}
+
 export const AgedBrieFactory = (
   initialQuality: number,
   initialSellIn: number
