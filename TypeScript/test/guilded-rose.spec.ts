@@ -62,7 +62,7 @@ describe('Gilded Rose', function () {
                 const items = gildedRose.updateQuality();
                 expect(items[0].quality).to.equal(11);
             });
-    
+
             it('The Quality of an item is never more than 50', () => {
                 const gildedRose = new GildedRose([ AgedBrieFactory(50, 50) ]);
                 const items = gildedRose.updateQuality();
@@ -104,5 +104,12 @@ describe('Gilded Rose', function () {
             })
         })
 
+        describe.only('"Conjured" item', () => {
+            it('after one cycle it decreases by 2', () => {
+                const gildedRose = new GildedRose([ new Item('Conjured', 20, 20) ]);
+                const items = gildedRose.updateQuality();
+                expect(items[0].quality).to.equal(18);
+            })
+        })
     })
 });

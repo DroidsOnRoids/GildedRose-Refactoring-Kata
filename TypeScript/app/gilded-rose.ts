@@ -19,11 +19,11 @@ class Product {
 
     update(): void {
         const item = this.item;
-        
+
         if (item.quality > 0) {
             item.quality = item.quality - 1;
         }
-        
+
         item.sellIn = item.sellIn - 1;
         if (item.sellIn < 0) {
             if (item.quality > 0) {
@@ -66,6 +66,10 @@ class SulfurasProduct extends Product {
     update(): void {}
 }
 
+class Conjured extends Product {
+    update(): void {}
+}
+
 const recognizeProduct = (item: Item): Product => {
     switch (item.name) {
         case GildedRose.AGED_BRIE: {
@@ -76,6 +80,9 @@ const recognizeProduct = (item: Item): Product => {
         }
         case GildedRose.SULFURAS: {
             return new SulfurasProduct(item);
+        }
+        case 'Conjured': {
+            return new Conjured(item);
         }
     }
     return new Product(item);
