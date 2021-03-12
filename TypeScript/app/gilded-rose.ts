@@ -10,22 +10,41 @@ export class Item {
     }
 }
 
-class Product {
-    item: Item;
 
-    constructor(item: Item){
-        this.item = item;
+class UseByDate {
+    constructor(private sellIn: number) {}
+
+    isExpired(): boolean {
+        return this.sellIn < 0
     }
 
+    decrease(): void {
+        this.sellIn = this.sellIn - 1
+    }
+}
+class Product {
+    protected useByDate: UseByDate
+    name: string;
+    sellIn: number;
+    quality: number;
+
+    constructor({name,quality,sellIn}: Item){
+        this.name = name;
+        this.quality = quality;
+        this.sellIn  = sellIn;
+        this.useByDate = new UseByDate(this.sellIn)
+    }
+
+
     update(): void {
-        const item = this.item;
+        const item = this;
 
         if (item.quality > 0) {
             item.quality = item.quality - 1;
         }
 
-        item.sellIn = item.sellIn - 1;
-        if (item.sellIn < 0) {
+        this.useByDate.decrease()
+        if (this.useByDate.isExpired()) {
             if (item.quality > 0) {
                 item.quality = item.quality - 1;
             }
@@ -35,29 +54,29 @@ class Product {
 
 class AgedBireProduct extends Product {
     update(): void {
-        this.item.sellIn = this.item.sellIn - 1;
-        if (this.item.quality >= 50) return;
-        this.item.quality = this.item.quality + 1;
+        this.useByDate.decrease()
+        if (this.quality >= 50) return;
+        this.quality = this.quality + 1;
     }
 }
 
 class BackStageProduct extends Product {
     update(): void {
-        this.item.sellIn = this.item.sellIn - 1;
-        this.item.quality = this.item.quality + 1
-        if (this.item.sellIn < 11) {
-            if (this.item.quality < 50) {
-                this.item.quality = this.item.quality + 1
+        this.useByDate.decrease()
+        this.quality = this.quality + 1
+        if (this.sellIn < 11) {
+            if (this.quality < 50) {
+                this.quality = this.quality + 1
             }
         }
-        if (this.item.sellIn < 6) {
-            if (this.item.quality < 50) {
-                this.item.quality = this.item.quality + 1
+        if (this.sellIn < 6) {
+            if (this.quality < 50) {
+                this.quality = this.quality + 1
             }
         }
 
-        if (this.item.sellIn < 0) {
-            this.item.quality = 0;
+        if (this.sellIn < 0) {
+            this.quality = 0;
         }
     }
 }
@@ -67,7 +86,16 @@ class SulfurasProduct extends Product {
 }
 
 class Conjured extends Product {
-    update(): void {}
+    update(): void {
+        this.useByDate.decrease()
+
+        if (this.useByDate.isExpired()){
+            this.quality -=4;
+        } else {
+            this.quality = this.quality -2;
+        }
+
+    }
 }
 
 const recognizeProduct = (item: Item): Product => {
@@ -81,7 +109,7 @@ const recognizeProduct = (item: Item): Product => {
         case GildedRose.SULFURAS: {
             return new SulfurasProduct(item);
         }
-        case 'Conjured': {
+        case GildedRose.CONJURED: {
             return new Conjured(item);
         }
     }
@@ -94,6 +122,7 @@ export class GildedRose {
     public static readonly AGED_BRIE = 'Aged Brie';
     public static readonly BACKSTAGE = 'Backstage passes to a TAFKAL80ETC concert';
     public static readonly SULFURAS = 'Sulfuras, Hand of Ragnaros';
+    public static readonly CONJURED = 'Conjured'
     public static readonly MIN_QUALITY = 0;
     public static readonly MAX_QUALITY = 50;
 
@@ -103,7 +132,7 @@ export class GildedRose {
 
     updateQuality() {
         this.products.forEach((product) => { product.update(); })
-        return this.products.map((product) => product.item);
+        return this.products;
     }
 }
 
